@@ -1,0 +1,129 @@
+version: "3.7"
+services:
+  varnish:
+    build:
+      context: ./build/varnish
+    image: magento2-varnish
+    ports:
+      - "80:6081"
+    volumes:
+      - ./build/varnish/etc/varnish.vcl:/etc/varnish/varnish.vcl
+    networks:
+      - frontend
+      - backend
+    depends_on:
+      - nginx
+
+  nginx:
+    build:
+      context: .
+      dockerfile: ./build/nginx/Dockerfile
+      args:
+        PHP_FPM_IMAGE_TAG: magento2-php-fpm
+    image: magento2-nginx
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./src:/var/www/html:cached
+      - ./build/nginx/etc/nginx.conf:/etc/nginx/nginx.conf
+      - ./build/nginx/etc/default.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - backend
+      - frontend
+    depends_on:
+      - php-fpm
+
+  php-fpm:
+    build:
+      context: .
+      dockerfile: ./build/php-fpm/Dockerfile
+      args:
+        COMPOSER_AUTH: $COMPOSER_AUTH
+        BUILD_PHP_XDEBUG_REMOTE_HOST: "host.docker.internal."
+        BUILD_ENVIRONMENT_IMAGE: "magento2-php-fpm-development-onbuild"
+        BUILD_PHP_XDEBUG_ENABLE: 0
+    image: magento2-php-fpm
+    volumes:
+      - ./src:/var/www/html:cached
+      - ./build/php-fpm/etc/www.conf:/usr/local/etc/php-fpm.d/www.conf
+      - ./build/php-fpm/etc/php.ini:/usr/local/etc/php/php.ini
+      - ./build/php-fpm/etc/conf.d/newrelic.ini:/usr/local/etc/php/conf.d/newrelic.ini
+    networks:
+      - backend
+    depends_on:
+      - redis
+      - mysql
+    env_file:
+      - .env
+
+  cron:
+    image: magento2-php-fpm
+    restart: always
+    volumes:
+      - ./src:/var/www/html:cached
+      - ./build/php-fpm/etc/www.conf:/usr/local/etc/php-fpm.d/www.conf
+    networks:
+      - backend
+    depends_on:
+      - redis
+      - mysql
+      - php-fpm
+    env_file:
+      - .env
+    command:
+      - "sh"
+      - "-c"
+      - "bin/magento cron:install; crontab -l > crontab; tini -- supercronic crontab"
+
+  mysql:
+    image: mariadb:10.2
+    ports:
+      - "3306"
+    volumes:
+      - ./tmp/mysql:/var/lib/mysql
+      - ./build/mysql/etc/my.cnf:/etc/mysql/my.cnf
+    networks:
+      - backend
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: 1
+      MYSQL_DATABASE: "magento"
+      MYSQL_USER: "magento"
+      MYSQL_PASSWORD: "magento"
+
+  elasticsearch:
+    image: elasticsearch:6.8.7
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    networks:
+      - backend
+    environment:
+      "discovery.type": "single-node"
+
+  redis:
+    image: redis:5-alpine
+    restart: always
+    networks:
+      - backend
+
+  mail:
+    image: mailhog/mailhog
+    restart: always
+    command: ["-smtp-bind-addr", "0.0.0.0:1025", "-storage=maildir", "-maildir-path=/data"]
+    volumes:
+      - ./tmp/mailhog:/data
+    ports:
+      - "8025:8025"
+    networks:
+      - backend
+
+#  newrelic-agent:
+#    image: newrelic/php-daemon
+#    restart: always
+#    networks:
+#      - backend
+
+networks:
+  frontend:
+  backend:
+
