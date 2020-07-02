@@ -117,7 +117,7 @@ FROM ${BUILD_ENVIRONMENT_IMAGE} as magento2-php-fpm
 
 By default, php.ini and PHP-FPM are configured to run as a container for production use. They may still be optimal for a development purpose. 
 
-A snippet of [php.ini](build/php-fpm/php.ini) file
+A snippet of [php.ini](build/php-fpm/etc/php.ini) file
 ```ini
 ; Maximum amount of memory a script may consume (128MB)
 ; http://php.net/memory-limit
@@ -214,12 +214,12 @@ Emails configured via `sendmail` command in [php.ini](build/php-fpm/etc/php.ini)
 ```ini
 ; For Unix only.  You may supply arguments as well (default: "sendmail -t -i").
 ; http://php.net/sendmail-path
-sendmail_path = sendmail -t -i ${PHP_SENDMAIL_PATH}
+sendmail_path = sendmail -t -i -S ${PHP_SENDMAIL_PATH}
 ``` 
 
-It allows using any external email provider, including AWS SES, Sendinblue, Sendgrid. For development purpose, we will use Mailhog.
+It allows using any external email provider, including AWS SES, Sendinblue, Sendgrid. For development purpose, we will use MailHog.
 ```ini
-PHP_SENDMAIL_PATH="-S mail:1025"
+PHP_SENDMAIL_PATH=mail:1025
 ```
  
 ### Debugging and profiling
@@ -258,8 +258,6 @@ services:
   newrelic-agent:
     image: newrelic/php-daemon
     restart: always
-    ports:
-      - "31339"
     networks:
       - backend
 ```
