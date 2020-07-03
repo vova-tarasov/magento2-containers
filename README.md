@@ -72,6 +72,14 @@ Ensure the following conditions are met:
      --use-rewrites "1" \
      --cleanup-database \
      --http-cache-hosts "varnish" \
+     --session-save redis \
+     --session-save-redis-host redis \
+     --session-save-redis-port 6379 \
+     --session-save-redis-db 1 \
+     --cache-backend redis \
+     --cache-backend-redis-server redis \
+     --cache-backend-redis-db 0 \
+     --cache-backend-redis-port 6379 \
      --base-url "http://magento2.local/"
     ```
 7. Add a new hostname to `/etc/hosts` file
