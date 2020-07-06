@@ -99,12 +99,18 @@ RUN apk add --no-cache --virtual .build-deps ${PHPIZE_DEPS} \
   # Change uid to 1000 and gid to 1000
   && usermod -u 1000 www-data \
   && groupmod -g 1000 www-data \
-  # Configure GD
-  && docker-php-ext-configure gd \
-    --with-gd \
-    --with-freetype-dir=/usr/include/ \
-    --with-png-dir=/usr/include/ \
-    --with-jpeg-dir=/usr/include/ \
+  # Configure GD (for PHP version >=5.4 use different configure args)
+  && if [ "${PHP_VERSION::3}" = "7.2" ] || [ "${PHP_VERSION::3}" = "7.3" ]; then \
+        docker-php-ext-configure gd \
+        --with-gd \
+        --with-freetype-dir=/usr/include/ \
+        --with-png-dir=/usr/include/ \
+        --with-jpeg-dir=/usr/include/; \
+      else \
+        docker-php-ext-configure gd \
+        --with-freetype \
+        --with-jpeg; \
+      fi \
   # Configure igbinary for better compression and Yaml
   && pecl install -o -f igbinary yaml lzf apcu \
   && docker-php-ext-enable igbinary yaml lzf apcu \

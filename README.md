@@ -147,6 +147,18 @@ PHP_OPCACHE_CONSISTENCY_CHECK=1
 PHP_MEMORY_LIMIT=4G
 ```
 
+To change PHP version, modify the `PHP_FPM_IMAGE` argument of the build section. Currently, 5.2, 5.3 and 5.4 versions supported
+  ```yaml
+version: "3.7"
+  services:
+   php-fpm:
+    build:
+      context: .
+      dockerfile: ./build/php-fpm/Dockerfile
+      args:
+        PHP_FPM_IMAGE: "php:7.4-fpm-alpine"
+  ```
+
 #### Database
 The Magento software recommends [MariaDB](https://mariadb.org/). It might be replaced with [MySQL](https://www.mysql.com/) or [Percona](https://www.percona.com/) based on eventual production setup. 
 
