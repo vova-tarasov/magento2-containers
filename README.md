@@ -39,7 +39,7 @@ Ensure the following conditions are met:
     ```
 4. Connect to the PHP-FPM container
     ```shell script
-   docker exec -it <php-fpm container name> bash
+   docker exec -it $(docker ps -f name=php-fpm -q) bash
     ```
 5. Choose your preferable way to install [Magento software](https://devdocs.magento.com/guides/v2.3/install-gde/bk-install-guide.html) or use the following commands:
 
@@ -86,6 +86,13 @@ Ensure the following conditions are met:
     ```shell script
     echo -e "127.0.0.1\tmagento2.local" | sudo tee -a /etc/hosts 
     ```
+8. Populate the website with data from performance profile (Optional)
+    
+    *The latest Magento Community edition*
+   ```shell script
+    bin/magento setup:performance:generate-fixtures setup/performance-toolkit/profiles/ce/small.xml
+    ```
+
 Click to open http://magento2.local in your web browser to verify the setup
 
 ### Components
@@ -150,7 +157,7 @@ You may need to adjust it based on your database size and machine capacity.
 `slow_query_log` is enabled to log queries that are slower than 2 seconds.
 To watch the file for changes, you may use the following command:
 ```shell script
-docker exec -it <mysql container> tail -f /var/log/mysql/mariadb-slow.log
+docker exec -it $(docker ps -f name=mysql -q) tail -f /var/log/mysql/mariadb-slow.log
 ```
 
 #### Nginx
@@ -173,7 +180,7 @@ Nginx runs under the same UID = 1000, and GID = 1000 as PHP-FPM and listens on p
 
 2. Changing anything in Nginx [configuration](build/nginx/etc/default.conf) requires a restart
       ```shell script
-      docker exec -it <nginx container> nginx -s reload
+      docker exec -it $(docker ps -f name=nginx -q) nginx -s reload
       ```
 
 #### Varnish
@@ -204,12 +211,12 @@ The same instance of Redis may be used to store user sessions and cache.
 
 Connecting to Redis is pretty straight-forward, from your command line run 
 ```shell script
-docker exec -it <redis container name> redis-cli
+docker exec -it $(docker ps -f name=redis -q) redis-cli
 ```
 
 To clear all the data, use the following command
 ```shell script
-docker exec -it <redis container name> redis-cli FLUSHALL
+docker exec -it $(docker ps -f name=redis -q) redis-cli FLUSHALL
 ```
 
 #### Cron 
