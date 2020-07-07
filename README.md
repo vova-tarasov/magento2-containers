@@ -2,6 +2,27 @@
 
 This repository acts as a first building block for all environments.
 
+## Table of Contents
+
+- [Goal](#goal)
+- [Motivation](#motivation)
+- [Development environment](#development-environment)
+    * [Initial setup](#initial-setup)
+        * [Prerequisites](#prerequisites)
+        * [Starting a project from scratch](#starting-a-project-from-scratch)
+    * [Components](#components)
+        * [PHP-FPM](#php-fpm)
+        * [Database](#database)
+        * [Nginx](#nginx)
+        * [Varnish](#varnish)
+        * [Elasticsearch](#elasticsearch)
+        * [Redis](#redis)
+        * [CRON](#cron)
+        * [Sending emails](#sending-emails)
+    * [Debugging and profiling](#debugging-and-profiling)
+        * [Xdebug](#xdebug)
+        * [New Relic](#new-relic)
+
 ## Goal
 To create a reproducible and reusable containerized environment that works well on a local machine and in production.      
 
@@ -24,7 +45,7 @@ Ensure the following conditions are met:
     - at least 2 CPU cores (4 CPU recommended)
     - at least 4 GB of RAM (6 GB recommended)
 
-#### Start a project from scratch
+#### Starting a project from scratch
 1. Clone the repository
     ```
     git clone git@github.com:vova-tarasov/magento2-containers.git magento2/
