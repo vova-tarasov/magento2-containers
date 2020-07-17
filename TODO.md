@@ -1,0 +1,26 @@
+# TO DO
+
+- #### Development Environment
+    - [x] ~~Elasticsearch~~
+    - [x] ~~PHP-FPM version upgrade~~
+    - [x] ~~Performance data~~
+    - [ ] Performance optimization for Mac
+    - [ ] Logging
+    - [ ] Frontend optimized environment
+    - [ ] SSL certificate offload
+    - [ ] Blackfire integration
+    - [ ] Vault integration
+    - [ ] Documentation on how to run tests locally
+- #### Preparing Production Build
+    - [ ] Documentation on how to build an image for production  environment 
+    - [ ] Documentation on how to set Composer Auth credentials
+    - [ ] Prepare a script to run tests locally
+    - [ ] Documentation on how to run tests locally
+        - [ ] Unit testing
+        - [ ] Static testing
+            - [ ] Code Style
+            - [ ] PHP version compatibility
+        - [ ] Functional testing
+        - [ ] Integration testing
+        - [ ] Performance testing
+        - [ ] Security vulnerabilities testing
