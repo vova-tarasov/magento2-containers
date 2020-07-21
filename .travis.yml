@@ -19,4 +19,4 @@ before_script:
   - go get -t ./...
 
 script:
-  - travis_wait go test -p 1 ./test
+  - travis_wait 20 go test ./test
