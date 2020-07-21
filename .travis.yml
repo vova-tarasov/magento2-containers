@@ -1,13 +1,22 @@
 dist: trusty
 language: go
+
+go:
+  - 1.13.x
+
 os:
   - linux
-  - osx
-env:
-  global:
-    - GO111MODULE=on
-jobs:
-  include:
-    - stage: test docker images
-      script:
-        - cd test && go mod download && go test
+
+addons:
+  apt:
+    packages:
+      - docker-ce
+
+services:
+  - docker
+
+before_script:
+  - go get -t ./...
+
+script:
+  - travis_wait 20 go test ./test

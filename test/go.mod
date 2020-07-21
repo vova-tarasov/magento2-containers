@@ -1,4 +1,4 @@
-module github.com/vova-tarasov/magento2-containers
+module github.com/vova-tarasov/magento2-containers/test
 
 go 1.13
 

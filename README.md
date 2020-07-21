@@ -2,6 +2,8 @@
 
 This repository acts as a first building block for all environments.
 
+[![Build Status](https://travis-ci.com/vova-tarasov/magento2-containers.svg?branch=master)](https://travis-ci.com/vova-tarasov/magento2-containers)
+
 ## Table of Contents
 
 - [Goal](#goal)
