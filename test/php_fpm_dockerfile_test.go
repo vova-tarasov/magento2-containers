@@ -76,7 +76,6 @@ Zend OPcache
 `
 
 func TestDev72HasAllPHPModules(t *testing.T) {
-	t.Parallel()
 	tag := "magento2-php-fpm-72-test"
 	args := []string{
 		"BUILD_ENVIRONMENT_IMAGE=magento2-php-fpm-development-onbuild",
@@ -142,7 +141,6 @@ func TestDev72HasXdebug(t *testing.T) {
 }
 
 func TestDev73HasAllPHPModules(t *testing.T) {
-	t.Parallel()
 	tag := "magento2-php-fpm-73-test"
 	args := []string{
 		"BUILD_ENVIRONMENT_IMAGE=magento2-php-fpm-development-onbuild",
@@ -211,7 +209,6 @@ func TestDev73HasXdebug(t *testing.T) {
 }
 
 func TestDev74HasAllPHPModules(t *testing.T) {
-	t.Parallel()
 	tag := "magento2-php-fpm-74-test"
 	args := []string{
 		"BUILD_ENVIRONMENT_IMAGE=magento2-php-fpm-development-onbuild",

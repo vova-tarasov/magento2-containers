@@ -11,4 +11,5 @@ jobs:
   include:
     - stage: test docker images
       script:
-        - go get -t ./... && go test ./test
+        - go get -t ./...
+        - go test ./test
