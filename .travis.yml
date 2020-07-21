@@ -5,4 +5,4 @@ jobs:
   include:
     - stage: test docker images
       script:
-        - go test ./test
+        - cd test && go mod download && go test
