@@ -1,6 +1,11 @@
 dist: trusty
 language: go
-
+os:
+  - linux
+  - osx
+env:
+  global:
+    - GO111MODULE=on
 jobs:
   include:
     - stage: test docker images
