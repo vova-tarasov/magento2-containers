@@ -7,9 +7,11 @@ go:
 os:
   - linux
 
-jobs:
-  include:
-    - stage: test docker images
-      script:
-        - go get -t ./...
-        - travis_wait go test ./test
+services:
+  - docker
+
+before_script:
+  - go get -t ./...
+
+script:
+  - travis_wait go test ./test
