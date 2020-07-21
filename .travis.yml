@@ -12,6 +12,9 @@ addons:
     packages:
       - docker-ce
 
+services:
+  - docker
+
 before_script:
   - go get -t ./...
 
