@@ -7,10 +7,6 @@ go:
 os:
   - linux
 
-env:
-  global:
-    - GO111MODULE=on
-
 jobs:
   include:
     - stage: test docker images
