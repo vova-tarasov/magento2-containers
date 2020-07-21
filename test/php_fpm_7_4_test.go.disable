@@ -6,12 +6,11 @@ import (
 	"testing"
 )
 
-func TestDev73HasAllPHPModules(t *testing.T) {
-	t.Parallel()
-	tag := "magento2-php-fpm-73-test"
+func TestDev74HasAllPHPModules(t *testing.T) {
+	tag := "magento2-php-fpm-74-test"
 	args := []string{
 		"BUILD_ENVIRONMENT_IMAGE=magento2-php-fpm-development-onbuild",
-		"PHP_FPM_IMAGE=php:7.3-fpm-alpine",
+		"PHP_FPM_IMAGE=php:7.4-fpm-alpine",
 	}
 
 	buildOptions := &docker.BuildOptions{
@@ -24,18 +23,18 @@ func TestDev73HasAllPHPModules(t *testing.T) {
 
 	opts := &docker.RunOptions{Command: []string{"bash", "-c", "php -r 'echo PHP_VERSION;'"}}
 	output := docker.Run(t, tag, opts)
-	assert.Regexp(t, "^7\\.3\\.", output)
+	assert.Regexp(t, "^7\\.4\\.", output)
 
 	opts = &docker.RunOptions{Command: []string{"php", "-m"}}
 	output = docker.Run(t, tag, opts)
 	assert.Equal(t, PHP_MODULES, output)
 }
 
-func TestDev73HasCronSupport(t *testing.T) {
-	tag := "magento2-php-fpm-73-test"
+func TestDev74HasCronSupport(t *testing.T) {
+	tag := "magento2-php-fpm-74-test"
 	args := []string{
 		"BUILD_ENVIRONMENT_IMAGE=magento2-php-fpm-development-onbuild",
-		"PHP_FPM_IMAGE=php:7.3-fpm-alpine",
+		"PHP_FPM_IMAGE=php:7.4-fpm-alpine",
 	}
 
 	buildOptions := &docker.BuildOptions{
@@ -55,11 +54,11 @@ func TestDev73HasCronSupport(t *testing.T) {
 	assert.Equal(t, "/sbin/tini", output)
 }
 
-func TestDev73HasXdebug(t *testing.T) {
-	tag := "magento2-php-fpm-73-test"
+func TestDev74HasXdebug(t *testing.T) {
+	tag := "magento2-php-fpm-74-test"
 	args := []string{
 		"BUILD_ENVIRONMENT_IMAGE=magento2-php-fpm-development-onbuild",
-		"PHP_FPM_IMAGE=php:7.3-fpm-alpine",
+		"PHP_FPM_IMAGE=php:7.4-fpm-alpine",
 		"BUILD_PHP_XDEBUG_ENABLE=1",
 	}
 	buildOptions := &docker.BuildOptions{

@@ -7,15 +7,14 @@ import (
 )
 
 func TestDev72HasAllPHPModules(t *testing.T) {
-	t.Parallel()
 	tag := "magento2-php-fpm-72-test"
 	args := []string{
 		"BUILD_ENVIRONMENT_IMAGE=magento2-php-fpm-development-onbuild",
 	}
 
 	buildOptions := &docker.BuildOptions{
-		Tags: []string{tag},
-		BuildArgs: args,
+		Tags:         []string{tag},
+		BuildArgs:    args,
 		OtherOptions: []string{"-f", "../build/php-fpm/Dockerfile"},
 	}
 
@@ -37,8 +36,8 @@ func TestDev72HasCronSupport(t *testing.T) {
 	}
 
 	buildOptions := &docker.BuildOptions{
-		Tags: []string{tag},
-		BuildArgs: args,
+		Tags:         []string{tag},
+		BuildArgs:    args,
 		OtherOptions: []string{"-f", "../build/php-fpm/Dockerfile"},
 	}
 
@@ -60,15 +59,14 @@ func TestDev72HasXdebug(t *testing.T) {
 		"BUILD_PHP_XDEBUG_ENABLE=1",
 	}
 	buildOptions := &docker.BuildOptions{
-		Tags: []string{tag},
-		BuildArgs: args,
+		Tags:         []string{tag},
+		BuildArgs:    args,
 		OtherOptions: []string{"-f", "../build/php-fpm/Dockerfile"},
 	}
 
 	docker.Build(t, "..", buildOptions)
 
-	opts := &docker.RunOptions{Command: []string{"bash", "-c",  "php -m | grep xdebug"}}
+	opts := &docker.RunOptions{Command: []string{"bash", "-c", "php -m | grep xdebug"}}
 	output := docker.Run(t, tag, opts)
 	assert.Equal(t, "xdebug", output)
 }
-
