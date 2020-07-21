@@ -1,12 +1,10 @@
+# syntax = docker/dockerfile:1.0-experimental
 ARG PHP_FPM_IMAGE=php:7.2-fpm-alpine
 ARG BUILD_ENVIRONMENT_IMAGE=magento2-php-fpm-production-onbuild
 
 FROM ${PHP_FPM_IMAGE} as magento2-php-fpm-base
 
 MAINTAINER Volodymyr Tarasov <volodymyr.tarasov@gmail.com>
-
-ARG MAGENTO_RUN_MODE=production
-ARG COMPOSER_AUTH
 
 ARG SUPERCRONIC_URL=https://github.com/aptible/supercronic/releases/download/v0.1.9/supercronic-linux-amd64
 ARG SUPERCRONIC=supercronic-linux-amd64
@@ -148,13 +146,14 @@ COPY build/php-fpm/etc/conf.d/ /usr/local/etc/php/conf.d/
 # Production image
 FROM magento2-php-fpm-base as magento2-php-fpm-production-onbuild
 
+ONBUILD COPY src/composer.json src/composer.lock ./
+
+ONBUILD RUN --mount=type=secret,id=composer COMPOSER_AUTH=$(cat /run/secrets/composer) composer install --prefer-dist --no-interaction --no-progress \
+    && rm -rf ~/.composer && chown -R www-data:www-data .
+
 ONBUILD USER www-data
 
-ONBUILD COPY src/auth.json src/composer.json src/composer.lock ./
-ONBUILD RUN composer install --prefer-dist --no-interaction --no-progress \
-    && rm -rf ~/.composer
-
-ONBUILD COPY --chown=www-data:www-data . .
+ONBUILD COPY --chown=www-data:www-data src/ .
 
 ONBUILD RUN bin/magento setup:di:compile \
         && composer dump-autoload --optimize --apcu \

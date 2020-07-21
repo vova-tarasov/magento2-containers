@@ -1,0 +1,8 @@
+dist: trusty
+language: go
+
+jobs:
+  include:
+    - stage: test docker images
+      script:
+        - go test ./test
