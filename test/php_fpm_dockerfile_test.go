@@ -1,4 +1,4 @@
-package test
+package main
 
 import (
 	"github.com/gruntwork-io/terratest/modules/docker"
