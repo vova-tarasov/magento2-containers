@@ -6,7 +6,6 @@ go:
 
 os:
   - linux
-  - osx
 
 env:
   global:
@@ -16,4 +15,4 @@ jobs:
   include:
     - stage: test docker images
       script:
-        - cd test && go mod download && go test ./
+        - go get -v ./... && go test -v ./...
