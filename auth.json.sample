@@ -1,0 +1,1 @@
+{"http-basic":{"repo.magento.com":{"username":"PUT_PUBLIC_KEY_HERE","password":"PUT_PRIVATE_KEY_HERE"}},"github-oauth":{"github.com":"PUT_GITHUB_ACCOUNT_KEY_HERE"}}

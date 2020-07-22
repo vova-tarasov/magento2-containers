@@ -10,11 +10,16 @@
     - [ ] SSL certificate offload
     - [ ] Blackfire integration
     - [ ] Vault integration
-    - [ ] Documentation on how to run tests locally
-- #### Preparing Production Build
-    - [ ] Documentation on how to build an image for production  environment 
-    - [ ] Documentation on how to set Composer Auth credentials
-    - [ ] Prepare a script to run tests locally
+    - [x] Docker files testing
+        - [x] ~~PHP-FPM unit test~~
+            - [x] ~~PHP 7.2~~        
+            - [x] ~~PHP 7.3~~        
+            - [x] ~~PHP 7.4~~        
+        - [ ] PHP-FPM lint
+        - [ ] Nginx unit test
+        - [ ] Nginx lint
+        - [ ] Varnish unit test
+        - [ ] Varnish lint
     - [ ] Documentation on how to run tests locally
         - [ ] Unit testing
         - [ ] Static testing
@@ -24,3 +29,7 @@
         - [ ] Integration testing
         - [ ] Performance testing
         - [ ] Security vulnerabilities testing
+- #### Preparing Production Build
+    - [x] ~~Documentation on how to build an image for production  environment~~ 
+    - [x] ~~Documentation on how to set Composer Auth credentials~~
+    - [ ] Testing production images locally
