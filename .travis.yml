@@ -6,6 +6,8 @@ go:
 
 os:
   - linux
+  - windows
+  - osx
 
 addons:
   apt:
@@ -19,4 +21,4 @@ before_script:
   - go get -t ./...
 
 script:
-  - travis_wait 20 go test ./test
+  - go test ./test

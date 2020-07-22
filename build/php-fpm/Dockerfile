@@ -1,4 +1,3 @@
-# syntax = docker/dockerfile:1.0-experimental
 ARG PHP_FPM_IMAGE=php:7.2-fpm-alpine
 ARG BUILD_ENVIRONMENT_IMAGE=magento2-php-fpm-production-onbuild
 
@@ -148,7 +147,7 @@ FROM magento2-php-fpm-base as magento2-php-fpm-production-onbuild
 
 ONBUILD COPY src/composer.json src/composer.lock ./
 
-ONBUILD RUN --mount=type=secret,id=composer COMPOSER_AUTH=$(cat /run/secrets/composer) composer install --prefer-dist --no-interaction --no-progress \
+ONBUILD RUN COMPOSER_AUTH=$(wget -O - -q http://credentials-server:8080/auth.json) composer install --prefer-dist --no-interaction --no-progress \
     && rm -rf ~/.composer && chown -R www-data:www-data .
 
 ONBUILD USER www-data
@@ -172,7 +171,7 @@ ONBUILD ARG BUILD_PHP_XDEBUG_REMOTE_PORT=9000
 ONBUILD RUN if [ "$BUILD_PHP_XDEBUG_ENABLE" = "1" ] ; then \
     apk add --no-cache --virtual .build-deps ${PHPIZE_DEPS} \
     && pecl install -o -f xdebug \
-    && echo 'zend_extension=xdebug.so' >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
+    && echo "zend_extension=xdebug.so" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
     && echo "xdebug.idekey = $BUILD_PHP_XDEBUG_IDEKEY" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
     && echo "xdebug.max_nesting_level = $BUILD_PHP_XDEBUG_MAX_NESTING_LEVEL" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
     && echo "xdebug.remote_enable = $BUILD_PHP_XDEBUG_REMOTE_ENABLE" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \

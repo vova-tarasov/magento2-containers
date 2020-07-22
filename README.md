@@ -1,6 +1,6 @@
 # Magento 2 Containers
 
-This repository acts as a first building block for all environments.
+This repository is a first building block to run Magento 2 in a cloud (GCP, AWS, Azure) and is suitable for all environments (development, UAT, production).
 
 [![Build Status](https://travis-ci.com/vova-tarasov/magento2-containers.svg?branch=master)](https://travis-ci.com/vova-tarasov/magento2-containers)
 
@@ -8,7 +8,7 @@ This repository acts as a first building block for all environments.
 
 - [Goal](#goal)
 - [Motivation](#motivation)
-- [Development environment](#development-environment)
+- [Development containers](#development-containers)
     * [Initial setup](#initial-setup)
         * [Prerequisites](#prerequisites)
         * [Starting a project from scratch](#starting-a-project-from-scratch)
@@ -24,6 +24,9 @@ This repository acts as a first building block for all environments.
     * [Debugging and profiling](#debugging-and-profiling)
         * [Xdebug](#xdebug)
         * [New Relic](#new-relic)
+- [Production containers](#production-containers)
+    * [Quick setup](#quick-setup)
+        * [Build](#build)
 
 ## Goal
 To create a reproducible and reusable containerized environment that works well on a local machine and in production.      
@@ -36,12 +39,12 @@ Given that containers are a standard nowadays,
 propagating changes to code, containers and their dependencies should be 
 a pretty straight-forward task.
 
-## Development environment
+## Development containers
 ### Initial setup
 #### Prerequisites
 Ensure the following conditions are met:
 
-1. Locally installed [Docker](https://www.docker.com/products/docker-desktop).
+1. Locally installed [Docker](https://www.docker.com/products/docker-desktop) >=18.09 version
 2. Docker has enough resources allocated:
     - at least 10 GB of free disk space for hosting containers
     - at least 2 CPU cores (4 CPU recommended)
@@ -156,21 +159,24 @@ FROM ${BUILD_ENVIRONMENT_IMAGE} as magento2-php-fpm
 By default, php.ini and PHP-FPM are configured to run as a container for production use. They may still be optimal for a development purpose. 
 
 A snippet of [php.ini](build/php-fpm/etc/php.ini) file
-```ini
-; Maximum amount of memory a script may consume (128MB)
-; http://php.net/memory-limit
-memory_limit = ${PHP_MEMORY_LIMIT}
-```
+
+    ```ini
+    ; Maximum amount of memory a script may consume (128MB)
+    ; http://php.net/memory-limit
+    memory_limit = ${PHP_MEMORY_LIMIT}
+    ```
 
 To redefine PHP_MEMORY_LIMIT value *(or any other)*, set it in [docker-compose.yaml](docker-compose.yaml) or [.env](.env) file
-```dotenv
-MAGENTO_RUN_MODE=development
-PHP_DISPLAY_ERRORS=1
-PHP_OPCACHE_CONSISTENCY_CHECK=1
-PHP_MEMORY_LIMIT=4G
-```
+
+    ```dotenv
+    MAGENTO_RUN_MODE=development
+    PHP_DISPLAY_ERRORS=1
+    PHP_OPCACHE_CONSISTENCY_CHECK=1
+    PHP_MEMORY_LIMIT=4G
+    ```
 
 To change PHP version, modify the `PHP_FPM_IMAGE` argument of the build section. Currently, 5.2, 5.3 and 5.4 versions supported
+
   ```yaml
 version: "3.7"
   services:
@@ -191,9 +197,10 @@ You may need to adjust it based on your database size and machine capacity.
 
 `slow_query_log` is enabled to log queries that are slower than 2 seconds.
 To watch the file for changes, you may use the following command:
-```shell script
-docker exec -it $(docker ps -f name=mysql -q) tail -f /var/log/mysql/mariadb-slow.log
-```
+
+    ```shell script
+    docker exec -it $(docker ps -f name=mysql -q) tail -f /var/log/mysql/mariadb-slow.log
+    ```
 
 #### Nginx
 > Due to security reason, containers running in production must not use systems ports (0-1023). 
@@ -224,6 +231,7 @@ Nginx runs under the same UID = 1000, and GID = 1000 as PHP-FPM and listens on p
 Varnish listens on its default port `6081`.
 
 To run the local environment with FPC on, ensure you have the following configuration in [docker-compose.yaml](docker-compose.yaml) as shown below
+
   ```yaml
     version: "3.7"
     services:
@@ -245,14 +253,16 @@ For simplicity' sake and to keep resource consumption low, Elasticsearch runs in
 The same instance of Redis may be used to store user sessions and cache.
 
 Connecting to Redis is pretty straight-forward, from your command line run 
-```shell script
-docker exec -it $(docker ps -f name=redis -q) redis-cli
-```
+
+    ```shell script
+    docker exec -it $(docker ps -f name=redis -q) redis-cli
+    ```
 
 To clear all the data, use the following command
-```shell script
-docker exec -it $(docker ps -f name=redis -q) redis-cli FLUSHALL
-```
+
+    ```shell script
+    docker exec -it $(docker ps -f name=redis -q) redis-cli FLUSHALL
+    ```
 
 #### Cron 
 > Due to security reason, containers must not run under `root`
@@ -261,54 +271,146 @@ Due to the nature of `cron`, it runs only under `root` user and not a good fit f
 
 #### Sending emails
 Emails configured via `sendmail` command in [php.ini](build/php-fpm/etc/php.ini) file
-```ini
-; For Unix only.  You may supply arguments as well (default: "sendmail -t -i").
-; http://php.net/sendmail-path
-sendmail_path = sendmail -t -i -S ${PHP_SENDMAIL_PATH}
-``` 
+
+    ```ini
+    ; For Unix only.  You may supply arguments as well (default: "sendmail -t -i").
+    ; http://php.net/sendmail-path
+    sendmail_path = sendmail -t -i -S ${PHP_SENDMAIL_PATH}
+    ``` 
 
 It allows using any external email provider, including AWS SES, Sendinblue, Sendgrid. For development purpose, we will use MailHog.
-```ini
-PHP_SENDMAIL_PATH=mail:1025
-```
- 
+
+    ```ini
+    PHP_SENDMAIL_PATH=mail:1025
+    ```
+     
 ### Debugging and profiling
 #### Xdebug
 It is well-known Xdebug can kill the performance and make your setup work slow. It also drastically degrades the speed of `composer install` command, so it's recommended to turn it off during initial project import and work on a Frontend part.
 
 To turn Xdebug on in [docker-compose.yaml](docker-compose.yaml) change `BUILD_PHP_XDEBUG_ENABLE` to `1` and ensure you have `BUILD_PHP_XDEBUG_REMOTE_HOST` defined  
-```ini
-services: 
-  ... 
-  php-fpm:
-    build:
-      ...
-      args:
-        BUILD_PHP_XDEBUG_ENABLE: 1
-        BUILD_PHP_XDEBUG_REMOTE_HOST: "host.docker.internal."
-```
+
+    ```ini
+    services: 
+      ... 
+      php-fpm:
+        build:
+          ...
+          args:
+            BUILD_PHP_XDEBUG_ENABLE: 1
+            BUILD_PHP_XDEBUG_REMOTE_HOST: "host.docker.internal."
+    ```
 
 then rebuild the container
-```shell script
-docker-compose up --build
-```
+
+    ```shell script
+    docker-compose up --build
+    ```
 
 #### New Relic
 To enable it locally, set corresponding values in [.env](.env)
-```dotenv
-NEWRELIC_ENABLED=1
-NEWRELIC_LICENSE=your license goes here
-NEWRELIC_APPNAME="your awesome project name"
-```
+
+    ```dotenv
+    NEWRELIC_ENABLED=1
+    NEWRELIC_LICENSE=your license goes here
+    NEWRELIC_APPNAME="your awesome project name"
+    ```
 
 uncomment New Relic agent in [docker-compose.yaml](docker-compose.yaml)
-```yaml
-services:
-  ... 
-  newrelic-agent:
-    image: newrelic/php-daemon
-    restart: always
-    networks:
-      - backend
-```
+
+    ```yaml
+    services:
+      ... 
+      newrelic-agent:
+        image: newrelic/php-daemon
+        restart: always
+        networks:
+          - backend
+    ```
 start PHP-FPM, CRON and New Relic containers
+
+## Production containers
+### Quick setup
+##### Build
+1. [Follow these steps](#starting-a-project-from-scratch) to setup the project
+
+2. Ensure you have [app/etc/config.php](src/app/etc/config.php) file with `modules` and `scopes` configurations
+
+    ```php
+    <?php
+    return [
+        'modules' => [
+            'Magento_AdminAnalytics' => 1,
+            ...
+        ],
+        'scopes' => [
+            'websites' => [
+                'admin' => [
+                    'website_id' => '0',
+                    'code' => 'admin',
+                    'name' => 'Admin',
+                    'sort_order' => '0',
+                    'default_group_id' => '0',
+                    'is_default' => '0',
+                ],
+                'base' => [
+                    'website_id' => '1',
+                    'code' => 'base',
+                    'name' => 'Main Website',
+                    'sort_order' => '0',
+                    'default_group_id' => '1',
+                    'is_default' => '1',
+                ],
+            ],
+            'groups' => [
+                0 => [
+                    'group_id' => '0',
+                    'website_id' => '0',
+                    'name' => 'Default',
+                    'root_category_id' => '0',
+                    'default_store_id' => '0',
+                    'code' => 'default',
+                ],
+                1 => [
+                    'group_id' => '1',
+                    'website_id' => '1',
+                    'name' => 'Main Website Store',
+                    'root_category_id' => '2',
+                    'default_store_id' => '1',
+                    'code' => 'main_website_store',
+                ],
+            ],
+            'stores' => [
+                'admin' => [
+                    'store_id' => '0',
+                    'code' => 'admin',
+                    'website_id' => '0',
+                    'group_id' => '0',
+                    'name' => 'Admin',
+                    'sort_order' => '0',
+                    'is_active' => '1',
+                ],
+                'default' => [
+                    'store_id' => '1',
+                    'code' => 'default',
+                    'website_id' => '1',
+                    'group_id' => '1',
+                    'name' => 'Default Store View',
+                    'sort_order' => '0',
+                    'is_active' => '1',
+                ],
+            ],
+        ]
+    ];
+    ```
+
+3. Prepare [access keys to Magento 2](https://marketplace.magento.com/customer/accessKeys/) and optionally to your GitHub account by
+    copying [auth.json.sample](auth.json.sample) to `auth.json` and replacing credentials.
+    > `auth.json` won't be added to the final image nor leave a trace in docker build history 
+
+4. Run `make` to build images
+    ```shell script
+    make
+    ```
+
+5. Now you're ready to publish them into a cloud of your choice
