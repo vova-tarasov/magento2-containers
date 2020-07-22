@@ -173,6 +173,7 @@ To redefine PHP_MEMORY_LIMIT value *(or any other)*, set it in [docker-compose.y
     PHP_DISPLAY_ERRORS=1
     PHP_OPCACHE_CONSISTENCY_CHECK=1
     PHP_MEMORY_LIMIT=4G
+
    ```
 
 To change PHP version, modify the `PHP_FPM_IMAGE` argument of the build section. Currently, 5.2, 5.3 and 5.4 versions supported
@@ -197,6 +198,7 @@ You may need to adjust it based on your database size and machine capacity.
 
 `slow_query_log` is enabled to log queries that are slower than 2 seconds.
 To watch the file for changes, you may use the following command:
+
 
   ```shell script
     docker exec -it $(docker ps -f name=mysql -q) tail -f /var/log/mysql/mariadb-slow.log
@@ -291,6 +293,7 @@ It is well-known Xdebug can kill the performance and make your setup work slow. 
 
 To turn Xdebug on in [docker-compose.yaml](docker-compose.yaml) change `BUILD_PHP_XDEBUG_ENABLE` to `1` and ensure you have `BUILD_PHP_XDEBUG_REMOTE_HOST` defined  
 
+
   ```ini
     services: 
       ... 
@@ -310,6 +313,7 @@ then rebuild the container
 
 #### New Relic
 To enable it locally, set corresponding values in [.env](.env)
+
 
   ```dotenv
     NEWRELIC_ENABLED=1
@@ -336,6 +340,7 @@ start PHP-FPM, CRON and New Relic containers
 1. [Follow these steps](#starting-a-project-from-scratch) to setup the project
 
 2. Ensure you have [app/etc/config.php](src/app/etc/config.php) file with `modules` and `scopes` configurations
+
 
   ```php
     <?php
@@ -403,6 +408,7 @@ start PHP-FPM, CRON and New Relic containers
             ],
         ]
     ];
+
   ```
 
 3. Prepare [access keys to Magento 2](https://marketplace.magento.com/customer/accessKeys/) and optionally to your GitHub account by
@@ -410,6 +416,7 @@ start PHP-FPM, CRON and New Relic containers
     > `auth.json` won't be added to the final image nor leave a trace in docker build history 
 
 4. Run `make` to build images
+
    ```shell script
     make
    ```
