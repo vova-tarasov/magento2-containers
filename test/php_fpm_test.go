@@ -3,61 +3,76 @@ package main
 import (
 	"github.com/gruntwork-io/terratest/modules/docker"
 	"github.com/stretchr/testify/assert"
+	"os"
+	"strings"
 	"testing"
 )
 
-func TestDev73(t *testing.T) {
-	tag := "magento2-php-fpm-73-test"
+func getPHPVersion(t *testing.T) string {
+	image := os.Getenv("PHP_VERSION")
+	assert.NotEmpty(t, image, "Environment variable `PHP_VERSION` must not be empty")
+	return image
+}
+
+func getPHPImageTag(version string) string {
+	return "php:" + version + "-fpm-alpine"
+}
+
+func TestPHPFPMDev(t *testing.T) {
+	version := getPHPVersion(t)
+	tag := "magento2-php-fpm-test"
 	args := []string{
 		"BUILD_ENVIRONMENT_IMAGE=magento2-php-fpm-development-onbuild",
-		"PHP_FPM_IMAGE=php:7.3-fpm-alpine",
+		"PHP_FPM_IMAGE=" + getPHPImageTag(version),
 	}
 
 	buildOptions := &docker.BuildOptions{
-		Tags: []string{tag},
-		BuildArgs: args,
+		Tags:         []string{tag},
+		BuildArgs:    args,
 		OtherOptions: []string{"-f", "../build/php-fpm/Dockerfile"},
 	}
 
 	docker.Build(t, "..", buildOptions)
 
-  // PHP version
+	// PHP version
 	opts := &docker.RunOptions{Command: []string{"bash", "-c", "php -r 'echo PHP_VERSION;'"}}
 	output := docker.Run(t, tag, opts)
-	assert.Regexp(t, "^7\\.3\\.", output)
+	regex := "^" + strings.ReplaceAll(version, ".", "\\.")
+	assert.Regexp(t, regex, output)
 
-  // Contains required PHP modules
+	// Contains required PHP modules
 	opts = &docker.RunOptions{Command: []string{"php", "-m"}}
 	output = docker.Run(t, tag, opts)
 	assert.Equal(t, PHP_MODULES, output)
 
-  // Contains supercronic
+	// Contains supercronic
 	opts = &docker.RunOptions{Command: []string{"which", "supercronic"}}
 	output = docker.Run(t, tag, opts)
 	assert.Equal(t, "/usr/local/bin/supercronic", output)
 
-  // Contains tini
+	// Contains tini
 	opts = &docker.RunOptions{Command: []string{"which", "tini"}}
 	output = docker.Run(t, tag, opts)
 	assert.Equal(t, "/sbin/tini", output)
 }
 
-func TestDev73HasXdebug(t *testing.T) {
-	tag := "magento2-php-fpm-73-test"
+func TestPHPFPMDevHasXdebug(t *testing.T) {
+	version := getPHPVersion(t)
+	tag := "magento2-php-fpm-test"
 	args := []string{
 		"BUILD_ENVIRONMENT_IMAGE=magento2-php-fpm-development-onbuild",
-		"PHP_FPM_IMAGE=php:7.3-fpm-alpine",
 		"BUILD_PHP_XDEBUG_ENABLE=1",
+		"PHP_FPM_IMAGE=" + getPHPImageTag(version),
 	}
 	buildOptions := &docker.BuildOptions{
-		Tags: []string{tag},
-		BuildArgs: args,
+		Tags:         []string{tag},
+		BuildArgs:    args,
 		OtherOptions: []string{"-f", "../build/php-fpm/Dockerfile"},
 	}
 
 	docker.Build(t, "..", buildOptions)
 
-	opts := &docker.RunOptions{Command: []string{"bash", "-c",  "php -m | grep xdebug"}}
+	opts := &docker.RunOptions{Command: []string{"bash", "-c", "php -m | grep xdebug"}}
 	output := docker.Run(t, tag, opts)
 	assert.Equal(t, "xdebug", output)
 }

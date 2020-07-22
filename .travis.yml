@@ -1,13 +1,16 @@
 dist: trusty
 language: go
 
+env:
+  - PHP_VERSION=7.2
+  - PHP_VERSION=7.3
+  - PHP_VERSION=7.4
+
 go:
   - 1.13.x
 
 os:
   - linux
-  - windows
-  - osx
 
 addons:
   apt:
