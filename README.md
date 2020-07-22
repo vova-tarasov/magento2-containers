@@ -160,24 +160,24 @@ By default, php.ini and PHP-FPM are configured to run as a container for product
 
 A snippet of [php.ini](build/php-fpm/etc/php.ini) file
 
-    ```ini
+   ```ini
     ; Maximum amount of memory a script may consume (128MB)
     ; http://php.net/memory-limit
     memory_limit = ${PHP_MEMORY_LIMIT}
-    ```
+   ```
 
 To redefine PHP_MEMORY_LIMIT value *(or any other)*, set it in [docker-compose.yaml](docker-compose.yaml) or [.env](.env) file
 
-    ```dotenv
+   ```dotenv
     MAGENTO_RUN_MODE=development
     PHP_DISPLAY_ERRORS=1
     PHP_OPCACHE_CONSISTENCY_CHECK=1
     PHP_MEMORY_LIMIT=4G
-    ```
+   ```
 
 To change PHP version, modify the `PHP_FPM_IMAGE` argument of the build section. Currently, 5.2, 5.3 and 5.4 versions supported
 
-  ```yaml
+ ```yaml
 version: "3.7"
   services:
    php-fpm:
@@ -198,16 +198,17 @@ You may need to adjust it based on your database size and machine capacity.
 `slow_query_log` is enabled to log queries that are slower than 2 seconds.
 To watch the file for changes, you may use the following command:
 
-    ```shell script
+  ```shell script
     docker exec -it $(docker ps -f name=mysql -q) tail -f /var/log/mysql/mariadb-slow.log
-    ```
+  ```
 
 #### Nginx
 > Due to security reason, containers running in production must not use systems ports (0-1023). 
 
 Nginx runs under the same UID = 1000, and GID = 1000 as PHP-FPM and listens on port `8080`.
 
-1. To run local environment without FPC, open the website directly on http://magento2.local:8080 or change the Nginx port mapping to `80:8080` in [docker-compose.yaml](docker-compose.yaml) as shown below
+1. To run local environment without FPC, open the website directly on http://magento2.local:8080 or change the Nginx port mapping to `80:8080` in [docker-compose.yaml](docker-compose.yaml) as shown below 
+
       ```yaml
       version: "3.7"
       services:
@@ -254,15 +255,15 @@ The same instance of Redis may be used to store user sessions and cache.
 
 Connecting to Redis is pretty straight-forward, from your command line run 
 
-    ```shell script
+  ```shell script
     docker exec -it $(docker ps -f name=redis -q) redis-cli
-    ```
+  ```
 
 To clear all the data, use the following command
 
-    ```shell script
+  ```shell script
     docker exec -it $(docker ps -f name=redis -q) redis-cli FLUSHALL
-    ```
+  ```
 
 #### Cron 
 > Due to security reason, containers must not run under `root`
@@ -272,17 +273,17 @@ Due to the nature of `cron`, it runs only under `root` user and not a good fit f
 #### Sending emails
 Emails configured via `sendmail` command in [php.ini](build/php-fpm/etc/php.ini) file
 
-    ```ini
+  ```ini
     ; For Unix only.  You may supply arguments as well (default: "sendmail -t -i").
     ; http://php.net/sendmail-path
     sendmail_path = sendmail -t -i -S ${PHP_SENDMAIL_PATH}
-    ``` 
+  ``` 
 
 It allows using any external email provider, including AWS SES, Sendinblue, Sendgrid. For development purpose, we will use MailHog.
 
-    ```ini
+  ```ini
     PHP_SENDMAIL_PATH=mail:1025
-    ```
+  ```
      
 ### Debugging and profiling
 #### Xdebug
@@ -290,7 +291,7 @@ It is well-known Xdebug can kill the performance and make your setup work slow. 
 
 To turn Xdebug on in [docker-compose.yaml](docker-compose.yaml) change `BUILD_PHP_XDEBUG_ENABLE` to `1` and ensure you have `BUILD_PHP_XDEBUG_REMOTE_HOST` defined  
 
-    ```ini
+  ```ini
     services: 
       ... 
       php-fpm:
@@ -299,26 +300,26 @@ To turn Xdebug on in [docker-compose.yaml](docker-compose.yaml) change `BUILD_PH
           args:
             BUILD_PHP_XDEBUG_ENABLE: 1
             BUILD_PHP_XDEBUG_REMOTE_HOST: "host.docker.internal."
-    ```
+  ```
 
 then rebuild the container
 
-    ```shell script
+  ```shell script
     docker-compose up --build
-    ```
+  ```
 
 #### New Relic
 To enable it locally, set corresponding values in [.env](.env)
 
-    ```dotenv
+  ```dotenv
     NEWRELIC_ENABLED=1
     NEWRELIC_LICENSE=your license goes here
     NEWRELIC_APPNAME="your awesome project name"
-    ```
+  ```
 
 uncomment New Relic agent in [docker-compose.yaml](docker-compose.yaml)
 
-    ```yaml
+  ```yaml
     services:
       ... 
       newrelic-agent:
@@ -326,7 +327,7 @@ uncomment New Relic agent in [docker-compose.yaml](docker-compose.yaml)
         restart: always
         networks:
           - backend
-    ```
+  ```
 start PHP-FPM, CRON and New Relic containers
 
 ## Production containers
@@ -336,7 +337,7 @@ start PHP-FPM, CRON and New Relic containers
 
 2. Ensure you have [app/etc/config.php](src/app/etc/config.php) file with `modules` and `scopes` configurations
 
-    ```php
+  ```php
     <?php
     return [
         'modules' => [
@@ -402,15 +403,15 @@ start PHP-FPM, CRON and New Relic containers
             ],
         ]
     ];
-    ```
+  ```
 
 3. Prepare [access keys to Magento 2](https://marketplace.magento.com/customer/accessKeys/) and optionally to your GitHub account by
     copying [auth.json.sample](auth.json.sample) to `auth.json` and replacing credentials.
     > `auth.json` won't be added to the final image nor leave a trace in docker build history 
 
 4. Run `make` to build images
-    ```shell script
+   ```shell script
     make
-    ```
+   ```
 
 5. Now you're ready to publish them into a cloud of your choice
