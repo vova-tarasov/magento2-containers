@@ -5,12 +5,10 @@ FROM ${PHP_FPM_IMAGE_TAG} as php-fpm
 
 FROM nginx:1-alpine
 
-MAINTAINER Volodymyr Tarasov <volodymyr.tarasov@gmail.com>
-
 COPY build/nginx/etc/default.conf /etc/nginx/conf.d/default.conf
 COPY build/nginx/etc/nginx.conf /etc/nginx/nginx.conf
 
-RUN apk add shadow \
+RUN apk add --no-cache shadow \
   # Change uid to 1000 and gid to 1000
   && usermod -u 1000 nginx \
   && groupmod -g 1000 nginx \

@@ -1,6 +1,6 @@
 FROM alpine:3.10 AS builder
 
-RUN apk add \
+RUN apk add --no-cache \
         varnish \
         varnish-dev \
         dpkg-dev \
@@ -21,8 +21,6 @@ RUN apk add \
     && make install
 
 FROM alpine:3.10
-
-MAINTAINER Volodymyr Tarasov <volodymyr.tarasov@gmail.com>
 
 RUN apk add --no-cache varnish shadow \
     && usermod -u 1000 varnish \
