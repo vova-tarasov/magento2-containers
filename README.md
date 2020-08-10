@@ -109,15 +109,23 @@ Ensure the following conditions are met:
      --base-url "http://magento2.local/"
     ```
 7. Add a new hostname to `/etc/hosts` file
-    ```shell script
-    echo -e "127.0.0.1\tmagento2.local" | sudo tee -a /etc/hosts 
-    ```
+
+    For MacOS users 
+   ```shell script
+   echo "127.0.0.1\tmagento2.local" | sudo tee -a /etc/hosts 
+   ```
+
+    for Linux users
+   ```shell script
+   echo -e "127.0.0.1\tmagento2.local" | sudo tee -a /etc/hosts 
+   ```
+
 8. Populate the website with data from performance profile (Optional)
     
     *The latest Magento Community edition*
    ```shell script
-    bin/magento setup:performance:generate-fixtures setup/performance-toolkit/profiles/ce/small.xml
-    ```
+   bin/magento setup:performance:generate-fixtures setup/performance-toolkit/profiles/ce/small.xml
+   ```
 
 Click to open http://magento2.local in your web browser to verify the setup
 
@@ -211,7 +219,7 @@ Nginx runs under the same UID = 1000, and GID = 1000 as PHP-FPM and listens on p
 
 1. To run local environment without FPC, open the website directly on http://magento2.local:8080 or change the Nginx port mapping to `80:8080` in [docker-compose.yaml](docker-compose.yaml) as shown below 
 
-      ```yaml
+    ```yaml
       version: "3.7"
       services:
         varnish:
@@ -221,12 +229,12 @@ Nginx runs under the same UID = 1000, and GID = 1000 as PHP-FPM and listens on p
           ...
           ports:
           - "80:8080"
-      ``` 
+     ``` 
 
 2. Changing anything in Nginx [configuration](build/nginx/etc/default.conf) requires a restart
-      ```shell script
+   ```shell script
       docker exec -it $(docker ps -f name=nginx -q) nginx -s reload
-      ```
+   ```
 
 #### Varnish
 > Due to security reason, containers running in production must not use systems ports (0-1023). 
