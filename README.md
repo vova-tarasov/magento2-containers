@@ -50,7 +50,7 @@ Ensure the following conditions are met:
     - at least 2 CPU cores (4 CPU recommended)
     - at least 4 GB of RAM (6 GB recommended)
 
-#### Starting a project from scratch
+#### To start a project from scratch
 1. Clone the repository
     ```
     git clone git@github.com:vova-tarasov/magento2-containers.git magento2/
@@ -160,7 +160,10 @@ ONBUILD ... production specific instructions
 FROM magento2-php-fpm-base as magento2-php-fpm-development-onbuild
 ONBUILD ... development specific instructions 
 
-# Final image
+# Final image compiles based on $BUILD_ENVIRONMENT_IMAGE argument
+# "Base image" + "Production image" instructions
+# OR
+# "Base image" + "Development image" instructions
 FROM ${BUILD_ENVIRONMENT_IMAGE} as magento2-php-fpm
 ```
 
@@ -184,7 +187,7 @@ To redefine PHP_MEMORY_LIMIT value *(or any other)*, set it in [docker-compose.y
 
    ```
 
-To change PHP version, modify the `PHP_FPM_IMAGE` argument of the build section. Currently, 5.2, 5.3 and 5.4 versions supported
+To change PHP version, modify the `PHP_FPM_IMAGE` argument of the build section. Currently, 7.2, 7.3 and 7.4 versions supported
 
  ```yaml
 version: "3.7"
@@ -198,7 +201,7 @@ version: "3.7"
   ```
 
 #### Database
-The Magento software recommends [MariaDB](https://mariadb.org/). It might be replaced with [MySQL](https://www.mysql.com/) or [Percona](https://www.percona.com/) based on eventual production setup. 
+The Magento software recommends [MariaDB](https://mariadb.org/). It can be replaced with [MySQL](https://www.mysql.com/) or [Percona](https://www.percona.com/) based on eventual production setup. 
 
 MariaDB version of the config file by default has a low amount of resource set.
 In order to speed things up for local development [my.cnf](build/mysql/etc/my.cnf) has `innodb_buffer_pool_size` set to `1G`.
