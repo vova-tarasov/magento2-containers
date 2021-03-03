@@ -125,7 +125,7 @@ RUN apk add --no-cache --virtual .build-deps ${PHPIZE_DEPS} \
   && mv "$SUPERCRONIC" "/usr/local/bin/${SUPERCRONIC}" \
   && ln -s "/usr/local/bin/${SUPERCRONIC}" /usr/local/bin/supercronic \
   # Install Composer
-  && curl -sSL https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer \
+  && curl -sSL https://getcomposer.org/installer | php -- --1 --install-dir=/usr/bin --filename=composer \
   # Remove build dependencies to minify the image size
   && rm -rf /tmp/* \
   && apk del --purge .build-deps
