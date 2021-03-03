@@ -1,4 +1,4 @@
-ARG PHP_FPM_IMAGE=php:7.2-fpm-alpine
+ARG PHP_FPM_IMAGE=php:7.4-fpm-alpine
 ARG BUILD_ENVIRONMENT_IMAGE=magento2-php-fpm-production-onbuild
 
 FROM ${PHP_FPM_IMAGE} as magento2-php-fpm-base
