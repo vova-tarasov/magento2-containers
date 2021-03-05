@@ -78,7 +78,7 @@ services:
   mysql:
     image: mariadb:10.2
     ports:
-      - "3306"
+      - "3306:3306"
     volumes:
       - ./tmp/mysql:/var/lib/mysql
       - ./build/mysql/etc/my.cnf:/etc/mysql/my.cnf
