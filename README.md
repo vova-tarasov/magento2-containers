@@ -273,9 +273,9 @@ start PHP-FPM, CRON and New Relic containers
 ## Production containers
 ### Quick setup
 ##### Build
-1. [Follow these steps](#starting-a-project-from-scratch) to setup the project
+1. [Follow these steps](docs/getting-started-new.md) to setup the project
 
-2. Ensure you have [app/etc/config.php](src/app/etc/config.php) file with `modules` and `scopes` configurations
+2. Ensure you have 'app/etc/config.php' file with `modules` and `scopes` configurations
 
 
   ```php
