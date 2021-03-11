@@ -1,13 +1,14 @@
 # Magento 2 Containers
 
-This repository is a first building block to run Magento 2 in a cloud (GCP, AWS, Azure) and is suitable for all environments (development, UAT, production).
+This repository is a first building block for running Magento 2 in cloud (GCP, AWS, Azure).
+
+A **fast**, **secure** and **lightweight** Docker setup.
+
+Suitable for development, UAT and production environments.
 
 [![Build Status](https://travis-ci.com/vova-tarasov/magento2-containers.svg?branch=master)](https://travis-ci.com/vova-tarasov/magento2-containers)
 
-
-- [Goal](#goal)
-- [Motivation](#motivation)
-- [Development containers](#development-containers)
+- [Development environment](#development-environment)
     * [Initial setup](#initial-setup)
         * [Prerequisites](#prerequisites)
         * [Getting started with a new project](docs/getting-started-new.md)
@@ -24,34 +25,22 @@ This repository is a first building block to run Magento 2 in a cloud (GCP, AWS,
     * [Debugging and profiling](#debugging-and-profiling)
         * [Xdebug](#xdebug)
         * [New Relic](#new-relic)
-- [Production containers](#production-containers)
+- [Production environment](#production-environment)
     * [Quick setup](#quick-setup)
         * [Build](#build)
 
-## Goal
-To create a reproducible and reusable containerized environment that works on a local machine and in production.      
-
-## Motivation
-Keeping production and development environments in sync and up to date is essential for productive project development.
-
-Each developer should have an ability to easily create and spin up the same or as close as possible to production setup on a local machine.
-Given that containers are a standard nowadays, 
-propagating changes to code, containers and their dependencies should be 
-a pretty straight-forward task.
-
-## Development containers
+## Development environment
 ### Initial setup
 #### Prerequisites
-Ensure the following conditions are met:
-
+Ensure you have the following requirements:
 1. Locally installed [Docker](https://www.docker.com/products/docker-desktop) (Docker Engine >=18.09 version)
-2. Docker has enough resources allocated:
+2. Docker has enough allocated resources:
     - at least 10 GB of free disk space for hosting containers
     - at least 2 CPU cores (4 CPU recommended)
     - at least 4 GB of RAM (6 GB recommended)
 
 ### Components
-> When building or modifying a component, prioritize production environment first and override it for your development needs via Docker build args or ENV variables.
+> When building or modifying a component, prioritize production first and override for your development needs via Docker build args and environment variables.
 
 The project should compile for a production environment with little to no intervention to configuration.
 
@@ -270,7 +259,7 @@ uncomment New Relic agent in [docker-compose.yaml](docker-compose.yaml)
   ```
 start PHP-FPM, CRON and New Relic containers
 
-## Production containers
+## Production environment
 ### Quick setup
 ##### Build
 1. [Follow these steps](docs/getting-started-new.md) to setup the project
