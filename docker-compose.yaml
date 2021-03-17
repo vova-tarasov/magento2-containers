@@ -38,7 +38,7 @@ services:
       context: .
       dockerfile: ./build/php-fpm/Dockerfile
       args:
-        PHP_FPM_IMAGE: "php:7.4-fpm-alpine"
+        PHP_FPM_IMAGE: "php:7.3-fpm-alpine"
         COMPOSER_AUTH: $COMPOSER_AUTH
         BUILD_PHP_XDEBUG_REMOTE_HOST: "host.docker.internal."
         BUILD_ENVIRONMENT_IMAGE: "magento2-php-fpm-development-onbuild"
@@ -91,7 +91,7 @@ services:
       MYSQL_PASSWORD: "magento"
 
   elasticsearch:
-    image: elasticsearch:6.8.7
+    image: elasticsearch:7.11.1
     ports:
       - "9200:9200"
       - "9300:9300"
