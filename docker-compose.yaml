@@ -46,6 +46,7 @@ services:
     image: magento2-php-fpm
     volumes:
       - ./src:/var/www/html:cached
+      - vendor:/var/www/html/vendor
       - ./build/php-fpm/etc/www.conf:/usr/local/etc/php-fpm.d/www.conf
       - ./build/php-fpm/etc/php.ini:/usr/local/etc/php/php.ini
       - ./build/php-fpm/etc/conf.d/newrelic.ini:/usr/local/etc/php/conf.d/newrelic.ini
@@ -119,6 +120,16 @@ services:
 #    image: newrelic/php-daemon
 #    networks:
 #      - backend
+
+  folder-init:
+    image: alpine
+    entrypoint: /bin/sh -c "chown -R 1000:1000 /mnt/vendor && chmod -R 777 /mnt/vendor"
+    restart: "no"
+    volumes:
+      - vendor:/mnt/vendor
+
+volumes:
+  vendor:
 
 networks:
   frontend:
