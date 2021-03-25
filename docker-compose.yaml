@@ -40,9 +40,9 @@ services:
       args:
         PHP_FPM_IMAGE: "php:7.3-fpm-alpine"
         COMPOSER_AUTH: $COMPOSER_AUTH
-        BUILD_PHP_XDEBUG_REMOTE_HOST: "host.docker.internal."
+        BUILD_PHP_XDEBUG_CLIENT_HOST: "host.docker.internal."
         BUILD_ENVIRONMENT_IMAGE: "magento2-php-fpm-development-onbuild"
-        BUILD_PHP_XDEBUG_ENABLE: 0
+        BUILD_PHP_XDEBUG_ENABLE: 1
     image: magento2-php-fpm
     volumes:
       - ./src:/var/www/html:cached

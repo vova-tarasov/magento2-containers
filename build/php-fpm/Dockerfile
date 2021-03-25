@@ -164,8 +164,7 @@ ONBUILD ARG BUILD_PHP_XDEBUG_ENABLE=0
 ONBUILD ARG BUILD_PHP_XDEBUG_IDEKEY=PHPSTORM
 ONBUILD ARG BUILD_PHP_XDEBUG_MAX_NESTING_LEVEL=2000
 ONBUILD ARG BUILD_PHP_XDEBUG_REMOTE_ENABLE=1
-ONBUILD ARG BUILD_PHP_XDEBUG_REMOTE_HOST=10.254.254.254
-ONBUILD ARG BUILD_PHP_XDEBUG_REMOTE_PORT=9000
+ONBUILD ARG BUILD_PHP_XDEBUG_CLIENT_HOST=10.254.254.254
 
 ONBUILD RUN if [ "$BUILD_PHP_XDEBUG_ENABLE" = "1" ] ; then \
     apk add --no-cache --virtual .build-deps ${PHPIZE_DEPS} \
@@ -174,8 +173,8 @@ ONBUILD RUN if [ "$BUILD_PHP_XDEBUG_ENABLE" = "1" ] ; then \
     && echo "xdebug.idekey = $BUILD_PHP_XDEBUG_IDEKEY" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
     && echo "xdebug.max_nesting_level = $BUILD_PHP_XDEBUG_MAX_NESTING_LEVEL" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
     && echo "xdebug.remote_enable = $BUILD_PHP_XDEBUG_REMOTE_ENABLE" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
-    && echo "xdebug.remote_host = $BUILD_PHP_XDEBUG_REMOTE_HOST" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
-    && echo "xdebug.remote_port = $BUILD_PHP_XDEBUG_REMOTE_PORT" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
+    && echo "xdebug.client_host = $BUILD_PHP_XDEBUG_CLIENT_HOST" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
+    && echo "xdebug.mode = debug" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
     && rm -rf /tmp/* \
     && apk del --purge .build-deps \
   ;fi
